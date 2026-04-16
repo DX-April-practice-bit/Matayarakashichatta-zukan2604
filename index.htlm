@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポジティブ変換！やらかし図鑑</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kiwi Maru', serif;
+            background-color: #fffaf0;
+        }
+        .card-flip {
+            perspective: 1000px;
+        }
+        .card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            border-radius: 2.5rem;
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.1);
+        }
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #ffffff;
+            border: 8px solid #4ade80;
+        }
+        .bounce-in {
+            animation: bounceIn 0.5s ease;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .step-badge {
+            display: inline-block;
+            background: #ffedd5;
+            color: #ea580c;
+            padding: 2px 12px;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            border: 1px solid #fed7aa;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800">
+
+    <header class="py-10 px-4 text-center">
+        <h1 class="text-4xl md:text-6xl font-black text-orange-600 mb-4 drop-shadow-md">🚀 やらかし図鑑</h1>
+        <div class="inline-block bg-white px-8 py-3 rounded-3xl shadow-lg border-4 border-orange-200">
+            <p class="text-xl md:text-3xl font-black text-slate-700">
+                ✨ <span class="text-orange-600 underline">失敗は人生のスパイス。</span><br class="md:hidden">笑い飛ばして次にいこう！
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 pb-24">
+        
+        <!-- Tab Navigation -->
+        <div class="flex justify-center space-x-2 md:space-x-4 mb-10">
+            <button onclick="switchTab('cards')" id="tab-cards" class="flex-1 max-w-[130px] py-4 rounded-2xl transition-all shadow-md bg-orange-500 text-white font-black text-lg ring-4 ring-orange-200">1.カード</button>
+            <button onclick="switchTab('game')" id="tab-game" class="flex-1 max-w-[130px] py-4 rounded-2xl transition-all shadow-md bg-emerald-500 text-white font-black text-lg opacity-60 hover:opacity-100">2.診断</button>
+            <button onclick="switchTab('boost')" id="tab-boost" class="flex-1 max-w-[130px] py-4 rounded-2xl transition-all shadow-md bg-rose-500 text-white font-black text-lg opacity-60 hover:opacity-100">3.元気注入</button>
+        </div>
+
+        <!-- Section: Flashcards -->
+        <section id="section-cards" class="block">
+            <div class="text-center mb-8">
+                <span class="step-badge">STEP 1：まずは笑う</span>
+                <h2 class="text-2xl md:text-3xl font-black mb-3">🌈 失敗を「お宝」に変える魔法</h2>
+                <p class="text-lg font-bold text-orange-600 bg-orange-50 py-2 rounded-full border-2 border-dashed border-orange-200 inline-block px-6">
+                    「あるある！」と笑えたら、あなたの勝ちです！
+                </p>
+                <div class="mt-6 bg-blue-500 text-white px-6 py-2 rounded-xl inline-block shadow-lg animate-bounce">
+                    <p class="font-black text-lg">👇 カードをタップして裏側を見てね！</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+                <button onclick="prevCard()" class="hidden md:block p-6 bg-white rounded-full shadow-xl hover:bg-orange-50 border-2 border-orange-200 text-3xl">⬅️</button>
+                
+                <div class="card-flip w-full max-w-[340px] h-[480px]">
+                    <div id="flashcard-inner" class="card-inner relative w-full h-full" onclick="flipCard()">
+                        <!-- Front -->
+                        <div class="card-front absolute inset-0 bg-white flex flex-col items-center justify-center p-8 text-center border-b-[16px] border-orange-500">
+                            <span id="card-emoji" class="text-9xl mb-6">📧</span>
+                            <h3 id="card-title" class="text-3xl font-black text-orange-600 mb-4 leading-tight">タイトル</h3>
+                            <div class="bg-slate-100 p-5 rounded-3xl w-full">
+                                <p id="card-desc" class="text-slate-700 font-black text-xl leading-relaxed">失敗の内容がここに表示されます...</p>
+                            </div>
+                            <div class="mt-auto text-orange-500 font-black tracking-tighter text-lg">CLICK TO FLIP! ↺</div>
+                        </div>
+                        <!-- Back -->
+                        <div class="card-back absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                            <div class="bg-green-500 text-white px-6 py-1 rounded-full mb-6 shadow-sm">
+                                <span class="font-black text-lg">✨ ポジティブ変換完了！</span>
+                            </div>
+                            <div class="text-slate-800 font-black text-2xl leading-snug">
+                                <p id="card-positive">前向きな言葉がここに表示されます！</p>
+                            </div>
+                            <div class="mt-auto py-4 px-6 bg-slate-50 rounded-2xl border border-slate-200">
+                                <p class="text-slate-500 font-bold">よし、笑い飛ばした！<br>次は<span class="text-emerald-600">「2.診断」</span>へGO！</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 md:hidden mt-4">
+                    <button onclick="prevCard()" class="p-5 bg-white rounded-full shadow-xl border-2 border-orange-100 text-2xl">⬅️</button>
+                    <button onclick="nextCard()" class="p-5 bg-white rounded-full shadow-xl border-2 border-orange-100 text-2xl">➡️</button>
+                </div>
+                
+                <button onclick="nextCard()" class="hidden md:block p-6 bg-white rounded-full shadow-xl hover:bg-orange-50 border-2 border-orange-200 text-3xl">➡️</button>
+            </div>
+        </section>
+
+        <!-- Section: Game / Diagnosis -->
+        <section id="section-game" class="hidden bounce-in">
+            <div class="bg-white rounded-[3rem] p-8 md:p-12 shadow-2xl max-w-xl mx-auto text-center border-t-[12px] border-emerald-500">
+                <span class="step-badge">STEP 2：ネタにする</span>
+                <h2 class="text-3xl font-black text-emerald-700 mb-4">🏆 やらかし称号診断</h2>
+                <p class="text-lg font-bold text-slate-600 mb-8 bg-emerald-50 py-3 px-4 rounded-2xl">
+                    笑い飛ばした後は、その失敗を格付けしましょう！<br>
+                    <span class="text-emerald-600">あなたの失敗は、どれだけ「価値」がある？</span>
+                </p>
+                
+                <div class="space-y-8 mb-10 text-left px-2">
+                    <div>
+                        <div class="flex justify-between mb-3">
+                            <label class="font-black text-slate-700 text-lg">💥 やらかしの衝撃度</label>
+                        </div>
+                        <input type="range" id="score-impact" min="1" max="10" value="5" class="w-full h-4 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-3">
+                            <label class="font-black text-slate-700 text-lg">🤣 周りが笑える度</label>
+                        </div>
+                        <input type="range" id="score-funny" min="1" max="10" value="5" class="w-full h-4 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-3">
+                            <label class="font-black text-slate-700 text-lg">🤕 心のダメージ（今の気分）</label>
+                        </div>
+                        <input type="range" id="score-sad" min="1" max="10" value="5" class="w-full h-4 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                    </div>
+                </div>
+
+                <button onclick="diagnose()" class="w-full py-6 bg-emerald-500 text-white rounded-[2rem] font-black text-2xl hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-200 transform active:scale-95">
+                    診断結果を「ネタ」に変える！
+                </button>
+
+                <div id="diagnosis-result" class="hidden mt-10 p-10 bg-emerald-50 rounded-[2.5rem] border-4 border-emerald-200">
+                    <p class="text-emerald-500 font-black mb-2">RESULT</p>
+                    <h3 id="result-title" class="text-3xl font-black text-emerald-800 mb-4 underline decoration-yellow-400 decoration-4">称号: なし</h3>
+                    <p id="result-comment" class="text-xl text-slate-700 font-bold leading-relaxed mb-6">コメントがここに表示されます。</p>
+                    <div class="pt-6 border-t border-emerald-200">
+                        <p class="font-black text-rose-500">仕上げに<span class="underline">「3.元気注入」</span>で心を癒そう！</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Boost / Messages -->
+        <section id="section-boost" class="hidden bounce-in">
+            <div class="text-center">
+                <span class="step-badge">STEP 3：自分を愛でる</span>
+                <h2 class="text-3xl md:text-4xl font-black text-rose-600 mb-4">💖 心の栄養、元気注入！</h2>
+                <div class="bg-rose-100 text-rose-800 px-8 py-4 rounded-2xl inline-block border-2 border-rose-300 mb-10 shadow-sm">
+                    <p class="text-xl font-black">🌟 下のボタンをクリックして、あなたへのメッセージを受け取ってね！</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+                    <button onclick="boost('work')" class="bg-white border-4 border-rose-100 p-8 rounded-[2rem] shadow-xl hover:border-rose-500 hover:scale-105 transition-all group">
+                        <span class="text-6xl mb-4 block group-hover:rotate-12 transition-transform">💼</span>
+                        <span class="text-xl font-black text-rose-600">仕事ミス</span>
+                    </button>
+                    <button onclick="boost('love')" class="bg-white border-4 border-rose-100 p-8 rounded-[2rem] shadow-xl hover:border-rose-500 hover:scale-105 transition-all group">
+                        <span class="text-6xl mb-4 block group-hover:rotate-12 transition-transform">🏠</span>
+                        <span class="text-xl font-black text-rose-600">私生活ドジ</span>
+                    </button>
+                    <button onclick="boost('talk')" class="bg-white border-4 border-rose-100 p-8 rounded-[2rem] shadow-xl hover:border-rose-500 hover:scale-105 transition-all group">
+                        <span class="text-6xl mb-4 block group-hover:rotate-12 transition-transform">🗨️</span>
+                        <span class="text-xl font-black text-rose-600">人間関係</span>
+                    </button>
+                    <button onclick="boost('forget')" class="bg-white border-4 border-rose-100 p-8 rounded-[2rem] shadow-xl hover:border-rose-500 hover:scale-105 transition-all group">
+                        <span class="text-6xl mb-4 block group-hover:rotate-12 transition-transform">🔑</span>
+                        <span class="text-xl font-black text-rose-600">忘れ物</span>
+                    </button>
+                    <button onclick="boost('tech')" class="bg-white border-4 border-rose-100 p-8 rounded-[2rem] shadow-xl hover:border-rose-500 hover:scale-105 transition-all group">
+                        <span class="text-6xl mb-4 block group-hover:rotate-12 transition-transform">💻</span>
+                        <span class="text-xl font-black text-rose-600">操作ミス</span>
+                    </button>
+                    <button onclick="boost('random')" class="bg-rose-600 text-white p-8 rounded-[2rem] shadow-2xl hover:bg-rose-700 hover:scale-110 transition-all group">
+                        <span class="text-6xl mb-4 block animate-spin-slow">🌟</span>
+                        <span class="text-xl font-black">神の声</span>
+                    </button>
+                </div>
+
+                <div id="boost-message-container" class="hidden p-12 bg-white rounded-[4rem] border-[10px] border-rose-200 relative shadow-2xl max-w-2xl mx-auto">
+                    <p id="boost-message" class="text-2xl md:text-4xl font-black text-rose-800 leading-tight">メッセージがここに表示されます！</p>
+                    <div class="absolute -top-6 -left-2 text-rose-200 text-9xl opacity-50 font-serif">“</div>
+                    <div class="absolute -bottom-16 -right-2 text-rose-200 text-9xl opacity-50 font-serif">”</div>
+                </div>
+
+                <div class="mt-16 bg-white p-8 rounded-3xl shadow-inner border-2 border-slate-100 max-w-lg mx-auto">
+                    <p class="text-xl font-black text-slate-700 mb-2">もうすっかり元気だね！</p>
+                    <p class="text-slate-500 font-bold">大丈夫、世界はあなたの味方だよ。<br>さあ、新しい気持ちで出発だ！ 🚀</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="fixed bottom-0 w-full bg-white/95 backdrop-blur-lg text-center py-6 border-t-4 border-orange-100 shadow-2xl z-50">
+        <p class="text-xl font-black text-slate-700 tracking-tighter">
+            ✨ <span class="bg-yellow-200 px-2">今日も生きてるだけで1億点！</span> あなたは宇宙で一番えらい！ ✨
+        </p>
+    </footer>
+
+    <script>
+        const cards = [
+            { emoji: "📧", title: "誤送信・宛先間違い", desc: "関係ない人に変な内容を送っちゃった...", positive: "未知の出会いを自ら演出！「この人、面白いかも？」と思わせたもん勝ちです。人脈の種まき完了！" },
+            { emoji: "🤫", title: "ミュート忘れ", desc: "独り言や生活音がWeb会議で筒抜けに...", positive: "飾らないあなたの「人間味」を世界に配信！チームの心理的安全性を爆上げした英雄です。" },
+            { emoji: "👟", title: "靴下がバラバラ", desc: "会社についてから気づいた、色が左右で違う...", positive: "世界に一つのアシンメトリー！左右対称のルールに縛られない、自由な魂の象徴です。" },
+            { emoji: "😴", title: "二度寝で大遅刻", desc: "気づいたら会議が始まる時間だった...", positive: "脳のフルメンテナンスが完了！今日からあなたは通常の3倍のパフォーマンスを発揮します。" },
+            { emoji: "🧂", title: "砂糖と塩を間違い", desc: "せっかく作った料理が衝撃の味に...", positive: "化学反応を楽しむ「料理の冒険家」！次に成功した時の感動は、誰よりも大きくなります。" },
+            { emoji: "🏢", title: "違う階で降りた", desc: "自信満々に降りたら全然知らないフロア...", positive: "未知の領域への視察ですね。そのフットワークの軽さが、新たなチャンスを呼び込みます！" }
+        ];
+
+        let currentCardIndex = 0;
+
+        function updateCard() {
+            const card = cards[currentCardIndex];
+            const inner = document.getElementById('flashcard-inner');
+            inner.classList.remove('is-flipped');
+            setTimeout(() => {
+                document.getElementById('card-emoji').textContent = card.emoji;
+                document.getElementById('card-title').textContent = card.title;
+                document.getElementById('card-desc').textContent = card.desc;
+                document.getElementById('card-positive').textContent = card.positive;
+            }, 200);
+        }
+
+        function flipCard() { document.getElementById('flashcard-inner').classList.toggle('is-flipped'); }
+        function nextCard() { currentCardIndex = (currentCardIndex + 1) % cards.length; updateCard(); }
+        function prevCard() { currentCardIndex = (currentCardIndex - 1 + cards.length) % cards.length; updateCard(); }
+
+        function switchTab(tab) {
+            const sections = ['cards', 'game', 'boost'];
+            const configs = {
+                cards: { color: 'bg-orange-500', ring: 'ring-orange-200' },
+                game: { color: 'bg-emerald-500', ring: 'ring-emerald-200' },
+                boost: { color: 'bg-rose-500', ring: 'ring-rose-200' }
+            };
+            sections.forEach(s => {
+                document.getElementById(`section-${s}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-${s}`);
+                btn.className = "flex-1 max-w-[130px] py-4 rounded-2xl transition-all shadow-md font-black text-lg opacity-40 text-white";
+                if (s === 'cards') btn.classList.add('bg-orange-500');
+                if (s === 'game') btn.classList.add('bg-emerald-500');
+                if (s === 'boost') btn.classList.add('bg-rose-500');
+            });
+            const activeBtn = document.getElementById(`tab-${tab}`);
+            activeBtn.classList.remove('opacity-40');
+            activeBtn.classList.add('ring-4', configs[tab].ring);
+            document.getElementById(`section-${tab}`).classList.remove('hidden');
+        }
+
+        function diagnose() {
+            const impact = parseInt(document.getElementById('score-impact').value);
+            const funny = parseInt(document.getElementById('score-funny').value);
+            const sad = parseInt(document.getElementById('score-sad').value);
+            const total = impact + funny + sad;
+            let title = "", comment = "";
+            if (total > 25) { title = "神話級：やらかし大明神"; comment = "もはや失敗ではなく「歴史」です。あなたの存在自体が周囲への特大のエンターテイメント！語り継ぎましょう。"; }
+            else if (funny > 7) { title = "愛されのプロ：爆笑メーカー"; comment = "あなたのミスで、その場にいた全員の寿命が3年延びました。あなたは歩くパワースポットです。"; }
+            else if (impact > 7) { title = "猛進型：破壊神（ポジティブ）"; comment = "守りに入らず攻めた結果！そのエネルギーは、いつか世界を救うビッグバンになります。"; }
+            else { title = "超新星：これから輝くドジっ子"; comment = "この程度、かすり傷です。もっと大胆にいきましょう！世界はあなたの味方です。"; }
+            const resultDiv = document.getElementById('diagnosis-result');
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-comment').textContent = comment;
+            resultDiv.classList.remove('hidden');
+            resultDiv.classList.add('bounce-in');
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        const boostMessages = {
+            work: ["ミスは「あなたが挑戦している証拠」！何もしない人より100倍かっこいいよ！", "その失敗、後で語れば「最高のリーダー」の成長物語になるよ。", "大丈夫、会社は潰れない！深呼吸して、今日を乗り切った自分を褒めて！"],
+            love: ["ちょっと抜けてる方が、みんな安心してあなたを好きになれるんだよ。", "完璧な人は疲れるけど、あなたは周りをホッとさせる天才！", "今日は美味しいケーキを買って帰ろう。あなたは十分頑張った！"],
+            talk: ["変なこと言っちゃった？ それはあなたの「正直さ」が溢れただけ！", "言葉じゃなくても、あなたの誠実さは背中から伝わってるよ。", "大丈夫。みんな自分の失敗を思い出すのに忙しくて、あなたのミスはすぐ忘れるよ！"],
+            forget: ["大事なものを忘れたのは、もっと大事なもの（自分）を大切にするため！", "忘れ物をするほど、頭がクリエイティブな事でいっぱいなんだね！", "大丈夫、なんとかなる！それが人生の醍醐味だよ。"],
+            tech: ["PCがあなたのスピードについてこれなかっただけ。あなたは時代の先駆者！", "データは消えても、あなたの経験値は消えない。レベルアップ完了！", "再起動の数だけ、あなたは強くなる。大丈夫、また作ればいい！"],
+            random: ["全宇宙があなたを肯定してるよ！今のままで100点満点！", "あなたが今笑えば、世界はちょっとだけ明るくなるよ。にっこり！", "「なんとかなる」は魔法の言葉。本当に、絶対なんとかなるから大丈夫！"]
+        };
+
+        function boost(type) {
+            const messages = boostMessages[type];
+            const message = messages[Math.floor(Math.random() * messages.length)];
+            const container = document.getElementById('boost-message-container');
+            const textElement = document.getElementById('boost-message');
+            textElement.textContent = message;
+            container.classList.remove('hidden');
+            container.classList.remove('bounce-in');
+            void container.offsetWidth; 
+            container.classList.add('bounce-in');
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        window.onload = () => { updateCard(); };
+    </script>
+</body>
+</html>
